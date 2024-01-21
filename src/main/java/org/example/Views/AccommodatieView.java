@@ -21,6 +21,7 @@ public class AccommodatieView extends MenuBar {
     private MenuItem menuAccommodatieView, menuGebruikerView, menuZaalView, menuZaalgegevensView, menuZaallocatieView;
 
     private TextField txtAccommodatie;
+    private Label lblAccommodatie;
     private Button btnOpslaan, btnUpdate, btnDelete;
     private ListView<String> lvAccommodatie;
     private AccommodatieController AccommodatieController;
@@ -32,21 +33,13 @@ public class AccommodatieView extends MenuBar {
         pane = p;
         menu = new Menu("Menu");
         iGebruiker gebruiker = UserRepository.getInstance().getGebruiker();
-        System.out.println(gebruiker.getClass());
 
         menuAccommodatieView = new MenuItem("Accommodaties");
         menuAccommodatieView.setOnAction(actionEvent -> {
             pane.getChildren().clear();
             new AccommodatieView(p);
         });
-        if(gebruiker instanceof Beheerder){
-            menuGebruikerView = new MenuItem("Gebruikers");
-            menuGebruikerView.setOnAction(actionEvent -> {
-                pane.getChildren().clear();
-                new GebruikerView(p);
-            });
-            menu.getItems().add(menuGebruikerView);
-        }
+
         menuZaalView = new MenuItem("Zalen");
         menuZaalView.setOnAction(actionEvent -> {
             pane.getChildren().clear();
@@ -69,9 +62,13 @@ public class AccommodatieView extends MenuBar {
         txtAccommodatie = new TextField();
         txtAccommodatie.setPromptText("Accommodatie");
 
+        //Buttons
         btnOpslaan = new Button("Voeg toe");
         btnUpdate = new Button("Bewerken");
         btnDelete = new Button("Verwijderen");
+
+        //Labels
+        lblAccommodatie = new Label("Accommodatienaam");
 
         AccommodatieController.refreshList(lvAccommodatie);
 
@@ -79,14 +76,17 @@ public class AccommodatieView extends MenuBar {
         lvAccommodatie.setOnMouseClicked(mouseEvent -> {
             AccommodatieController.fillFields(lvAccommodatie, txtAccommodatie);
         });
+
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             AccommodatieController.addAccommodatie(txtAccommodatie.getText());
             AccommodatieController.refreshList(lvAccommodatie);
         });
+
         btnUpdate.setOnMouseClicked(mouseEvent -> {
             AccommodatieController.updateAccommodatie(txtAccommodatie.getText(), lvAccommodatie.getSelectionModel().getSelectedItem());
             AccommodatieController.refreshList(lvAccommodatie);
         });
+
         btnDelete.setOnMouseClicked(mouseEvent -> {
             AccommodatieController.deleteAccommodatie( lvAccommodatie.getSelectionModel().getSelectedItem());
             AccommodatieController.refreshList(lvAccommodatie);
@@ -97,14 +97,35 @@ public class AccommodatieView extends MenuBar {
         gridPane.setVgap(5);
         gridPane.setPadding((new Insets(15)));
 
-        gridPane.add(txtAccommodatie,0,0);
-        gridPane.add(btnOpslaan,0,1);
-        gridPane.add(btnUpdate,0,2);
-        gridPane.add(btnDelete,0,3);
+        gridPane.add(lblAccommodatie,0,0);
+        gridPane.add(txtAccommodatie,0,1);
+        gridPane.add(btnOpslaan,0,2);
+        if(gebruiker instanceof Beheerder) {
+            gridPane.add(btnUpdate,0,3);
+            gridPane.add(btnDelete,0,4);
+        }
+
+        //Button width (gelijk aan TextFields)
+        btnOpslaan.setMinWidth(187);
+        btnUpdate.setMinWidth(187);
+        btnDelete.setMinWidth(187);
+
+        //TextField width
+        txtAccommodatie.setMinWidth(187);
 
         lvAccommodatie.relocate(300, 15);
 
         menu.getItems().addAll(menuAccommodatieView, menuZaalView, menuZaallocatieView, menuZaalgegevensView);
+
+        if(gebruiker instanceof Beheerder){
+            menuGebruikerView = new MenuItem("Gebruikers");
+            menuGebruikerView.setOnAction(actionEvent -> {
+                pane.getChildren().clear();
+                new GebruikerView(p);
+            });
+            menu.getItems().add(menuGebruikerView);
+        }
+
         this.getMenus().add(menu);
         p.getChildren().addAll(gridPane, lvAccommodatie);
     }

@@ -5,9 +5,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.example.Controllers.AccommodatieController;
+import org.example.Controllers.UserRepository;
 import org.example.Controllers.ZaalController;
 import org.example.DBCPDataSource;
 import org.example.Models.Accommodatie;
+import org.example.Models.Beheerder;
+import org.example.Models.iGebruiker;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -18,6 +21,7 @@ import java.util.Map;
 public class ZaalView {
     private TextField txtZaalnaam;
     private ComboBox cbAccommodatie;
+    private Label lblZaalnaam, lblAccommodatie;
     private Button btnOpslaan, btnUpdate, btnDelete;
     private ListView lvZaal;
     private ZaalController ZaalController;
@@ -27,11 +31,17 @@ public class ZaalView {
 
         //Grid
         GridPane gridPane = new GridPane();
+        iGebruiker gebruiker = UserRepository.getInstance().getGebruiker();
+
         ZaalController = new ZaalController();
         accommodatie = new Accommodatie("");
         //Textfields
         txtZaalnaam = new TextField();
         txtZaalnaam.setPromptText("Zaalnaam");
+
+        //Labels
+        lblZaalnaam = new Label("Zaalnaam");
+        lblAccommodatie = new Label("Accommodaties");
 
         //ComboBox
         cbAccommodatie = new ComboBox<>();
@@ -68,11 +78,23 @@ public class ZaalView {
         gridPane.setVgap(5);
         gridPane.setPadding((new Insets(15)));
 
-        gridPane.add(txtZaalnaam,0,0);
+        gridPane.add(lblAccommodatie, 0, 0);
         gridPane.add(cbAccommodatie,0,1);
-        gridPane.add(btnOpslaan,0,2);
-        gridPane.add(btnUpdate,0,3);
-        gridPane.add(btnDelete,0,4);
+        gridPane.add(lblZaalnaam, 0, 2);
+        gridPane.add(txtZaalnaam,0,3);
+        gridPane.add(btnOpslaan,0,4);
+        if(gebruiker instanceof Beheerder) {
+            gridPane.add(btnUpdate,0,5);
+            gridPane.add(btnDelete,0,6);
+        }
+        //Button width (gelijk aan TextFields)
+        btnOpslaan.setMinWidth(187);
+        btnUpdate.setMinWidth(187);
+        btnDelete.setMinWidth(187);
+
+        //TextField width
+        cbAccommodatie.setMinWidth(187);
+        txtZaalnaam.setMinWidth(187);
 
         lvZaal.relocate(300, 15);
 

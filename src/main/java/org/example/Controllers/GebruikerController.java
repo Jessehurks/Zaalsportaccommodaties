@@ -3,7 +3,9 @@ package org.example.Controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import org.example.DBCPDataSource;
 
 import java.sql.Connection;
@@ -18,6 +20,16 @@ public class GebruikerController {
 
     public GebruikerController(){
 
+    }
+    public void fillFields(TextField txtGebruikersnaam, TextField txtWachtwoord, ComboBox<String> cbType, ListView<String> lvGebruikers) {
+        String selectedGebruikersnaam = lvGebruikers.getSelectionModel().getSelectedItem().toString();
+
+        if(selectedGebruikersnaam != null){
+            Map<String, String> gebruikerMap = DBCPDataSource.getSelectedGebruiker(selectedGebruikersnaam);
+            txtGebruikersnaam.setText(gebruikerMap.get("gebruikersnaam"));
+            txtWachtwoord.setText(gebruikerMap.get("wachtwoord"));
+            cbType.getSelectionModel().select(gebruikerMap.get("type"));
+        }
     }
     public void addGebruiker(String txtGebruikersnaam, String txtWachtwoord, String cbType) {
         String strSQL = "insert into `gebruikers`(gebruikersnaam, wachtwoord, type) " +

@@ -28,7 +28,6 @@ public class LoginController {
                 UserRepository ur = UserRepository.getInstance();
 
                 if(type.equals("Beheerder")){
-                    System.out.println("test");
                     ur.setGebruiker(new Beheerder(strGebruikersnaam, strWachtwoord, type));
                 }else if(type.equals("Zaaleigenaar")){
                     ur.setGebruiker(new Zaaleigenaar(strGebruikersnaam, strWachtwoord, type));

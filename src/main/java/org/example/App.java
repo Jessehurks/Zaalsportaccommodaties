@@ -32,35 +32,35 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         Scene loginScene = createLoginScene();
+        loginScene.getStylesheets().add(("styles.css"));
+
         primaryStage.setScene(loginScene);
         primaryStage.show();
+
     }
     private Scene createLoginScene(){
-        // Create the layout for the login scene
         GridPane grid = new GridPane();
         grid.setAlignment(javafx.geometry.Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        // Add controls to the layout
-        Label usernameLabel = new Label("Username:");
+        Label usernameLabel = new Label("Gebruikersnaam");
         grid.add(usernameLabel, 0, 0);
         TextField usernameField = new TextField();
-        grid.add(usernameField, 1, 0);
+        grid.add(usernameField, 0, 1);
 
-        Label passwordLabel = new Label("Password:");
-        grid.add(passwordLabel, 0, 1);
+        Label passwordLabel = new Label("Wachtwoord:");
+        grid.add(passwordLabel, 0, 2);
         PasswordField passwordField = new PasswordField();
-        grid.add(passwordField, 1, 1);
+        grid.add(passwordField, 0, 3);
 
         Button loginButton = new Button("Login");
-        grid.add(loginButton, 1, 2);
+        grid.add(loginButton, 0, 4);
+        loginButton.setMinWidth(187);
 
-        // Add event handler for the login button
         loginButton.setOnAction(e -> handleLogin(usernameField.getText(), passwordField.getText()));
 
-        // Create the login scene
         return new Scene(grid, 400, 275);
 
     }
@@ -72,30 +72,19 @@ public class App extends Application {
                 showMainScreen();
             }
         } else {
-            System.out.println("Login failed. Please enter a valid username and password.");
+            System.out.println("Login mislukt, vul een geldig gebruikersnaam of wachtwoord in.");
         }
     }
 
     private void showMainScreen() {
-        // Create the layout for the main screen
-        GridPane grid = new GridPane();
-        grid.setAlignment(javafx.geometry.Pos.CENTER);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-
-        // Add controls to the layout for the main screen
-        Label welcomeLabel = new Label("Welcome to the Main Screen!");
-        grid.add(welcomeLabel, 0, 0);
-
-        // Create the main screen scene
         Pane root = new Pane();
         MenuBar menuBar = new AccommodatieView(root);
         VBox vbox = new VBox(menuBar, root);
-        Scene scene = new Scene(vbox, 850, 550, Color.ORANGE);
+        Scene scene = new Scene(vbox, 1600, 720, Color.ORANGE);
 
-        // Set the main screen scene as the primary stage scene
+        scene.getStylesheets().add(("styles.css"));
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Zaalsportaccommodaties");
     }
 
     public static void main(String[] args) {
