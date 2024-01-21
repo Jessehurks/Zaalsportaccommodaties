@@ -45,6 +45,9 @@ public class GebruikerView {
         btnUpdate = new Button("Bewerken");
         btnDelete = new Button("Verwijderen");
 
+        btnUpdate.setDisable(true);
+        btnDelete.setDisable(true);
+
         //Labels
         lblGebruikersnaam = new Label("Gebruikersnaam");
         lblWachtwoord = new Label("Wachtwoord");
@@ -54,6 +57,10 @@ public class GebruikerView {
 
         lvGebruikers.setOnMouseClicked(mouseEvent -> {
             GebruikerController.fillFields(txtGebruikersnaam, txtWachtwoord, cbType, lvGebruikers);
+        });
+        lvGebruikers.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btnUpdate.setDisable(newValue == null);
+            btnDelete.setDisable(newValue == null);
         });
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             GebruikerController.addGebruiker(txtGebruikersnaam.getText(),txtWachtwoord.getText(), cbType.getValue().toString());

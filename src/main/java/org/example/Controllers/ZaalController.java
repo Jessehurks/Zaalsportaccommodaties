@@ -44,7 +44,7 @@ public class ZaalController {
         }
     }
     public void fillFields(ListView<String> lvZaal, TextField txtZaalnaam, ComboBox<String> cbAccommodatie) {
-        String selectedZaal = lvZaal.getSelectionModel().getSelectedItem().toString();
+        String selectedZaal = lvZaal.getSelectionModel().getSelectedItem();
         if(selectedZaal != null){
             Map<String, String> zaalMap = DBCPDataSource.getSelectedZaal(selectedZaal);
             txtZaalnaam.setText(zaalMap.get("zaalnaam"));

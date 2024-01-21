@@ -67,11 +67,18 @@ public class AccommodatieView extends MenuBar {
         btnUpdate = new Button("Bewerken");
         btnDelete = new Button("Verwijderen");
 
+        btnUpdate.setDisable(true);
+        btnDelete.setDisable(true);
+
         //Labels
         lblAccommodatie = new Label("Accommodatienaam");
 
         AccommodatieController.refreshList(lvAccommodatie);
 
+        lvAccommodatie.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btnUpdate.setDisable(newValue == null);
+            btnDelete.setDisable(newValue == null);
+        });
 
         lvAccommodatie.setOnMouseClicked(mouseEvent -> {
             AccommodatieController.fillFields(lvAccommodatie, txtAccommodatie);

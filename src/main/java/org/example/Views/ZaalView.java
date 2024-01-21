@@ -54,11 +54,18 @@ public class ZaalView {
         btnUpdate = new Button("Bewerken");
         btnDelete = new Button("Verwijderen");
 
+        btnUpdate.setDisable(true);
+        btnDelete.setDisable(true);
+
         ZaalController.refreshList(lvZaal);
         ZaalController.fillComboBox(cbAccommodatie);
 
         lvZaal.setOnMouseClicked(mouseEvent -> {
             ZaalController.fillFields(lvZaal, txtZaalnaam, cbAccommodatie);
+        });
+        lvZaal.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btnUpdate.setDisable(newValue == null);
+            btnDelete.setDisable(newValue == null);
         });
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             ZaalController.addZaal(txtZaalnaam.getText(), cbAccommodatie.getValue().toString());

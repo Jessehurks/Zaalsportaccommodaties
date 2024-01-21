@@ -71,12 +71,20 @@ public class ZaallocatieView {
         btnUpdate = new Button("Bewerken");
         btnDelete = new Button("Verwijderen");
 
+        btnUpdate.setDisable(true);
+        btnDelete.setDisable(true);
+
+
         ZaallocatieController.refreshList(lvZaallocatie);
         ZaallocatieController.fillComboBox(cbZaalnaam);
 
         lvZaallocatie.setOnMouseClicked(mouseEvent -> {
             ZaallocatieController.fillFields(lvZaallocatie, txtAdres, txtPostcode, txtWoonplaats, txtXkoord, txtYkoord, cbZaalnaam);
             webView.getEngine().load("https://www.openstreetmap.org/export/embed.html?bbox=" + txtYkoord.getText() + "%2C" + txtXkoord.getText());
+        });
+        lvZaallocatie.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btnUpdate.setDisable(newValue == null);
+            btnDelete.setDisable(newValue == null);
         });
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             ZaallocatieController.addZaallocatie(cbZaalnaam.getValue().toString(), txtAdres.getText(), txtPostcode.getText(),txtWoonplaats.getText(), txtXkoord.getText(), txtYkoord.getText());

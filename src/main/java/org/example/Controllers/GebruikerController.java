@@ -22,7 +22,7 @@ public class GebruikerController {
 
     }
     public void fillFields(TextField txtGebruikersnaam, TextField txtWachtwoord, ComboBox<String> cbType, ListView<String> lvGebruikers) {
-        String selectedGebruikersnaam = lvGebruikers.getSelectionModel().getSelectedItem().toString();
+        String selectedGebruikersnaam = lvGebruikers.getSelectionModel().getSelectedItem();
 
         if(selectedGebruikersnaam != null){
             Map<String, String> gebruikerMap = DBCPDataSource.getSelectedGebruiker(selectedGebruikersnaam);

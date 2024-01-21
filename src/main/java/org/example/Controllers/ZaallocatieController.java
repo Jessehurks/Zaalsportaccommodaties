@@ -42,7 +42,7 @@ public class ZaallocatieController {
     }
 
     public void fillFields(ListView<String> lvZaallocatie, TextField txtAdres, TextField txtPostcode, TextField txtWoonplaats, TextField txtXkoord, TextField txtYkoord, ComboBox<String> cbZaalnaam) {
-        String selectedZaallocatie = lvZaallocatie.getSelectionModel().getSelectedItem().toString();
+        String selectedZaallocatie = lvZaallocatie.getSelectionModel().getSelectedItem();
         if(selectedZaallocatie != null){
             Map<String, String> zaallocatieMap = DBCPDataSource.getSelectedZaallocatie(selectedZaallocatie);
             txtAdres.setText(zaallocatieMap.get("adres"));

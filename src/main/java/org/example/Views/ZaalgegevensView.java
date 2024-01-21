@@ -56,11 +56,18 @@ public class ZaalgegevensView {
         btnUpdate = new Button("Bewerken");
         btnDelete = new Button("Verwijderen");
 
+        btnUpdate.setDisable(true);
+        btnDelete.setDisable(true);
+
         ZaalgegevensController.refreshList(lvZaalgegevens);
         ZaalgegevensController.fillComboBox(cbZaalnaam);
 
         lvZaalgegevens.setOnMouseClicked(mouseEvent -> {
             ZaalgegevensController.fillFields(lvZaalgegevens, txtTelefoonnummer, txtWebsite, cbZaalnaam);
+        });
+        lvZaalgegevens.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btnUpdate.setDisable(newValue == null);
+            btnDelete.setDisable(newValue == null);
         });
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             ZaalgegevensController.addZaalgegevens(cbZaalnaam.getValue().toString(), txtTelefoonnummer.getText(), txtWebsite.getText());
