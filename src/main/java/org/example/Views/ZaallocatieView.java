@@ -55,40 +55,11 @@ public class ZaallocatieView {
         btnDelete = new Button("Verwijderen");
 
         ZaallocatieController.refreshList(lvZaallocatie);
+        ZaallocatieController.fillComboBox(cbZaalnaam);
 
-        //TODO: Dit moet nog in ZaalgegevensController
-        try {
-            con = DBCPDataSource.getConnection();
-            Statement stat = con.createStatement();
-            ResultSet result = stat.executeQuery("Select * from `zalen`");
-
-            while (result.next()) {
-                String strZaalnaam = result.getString("zaalnaam");
-                cbZaalnaam.getItems().addAll(strZaalnaam);
-            }
-            lvZaallocatie.setOnMouseClicked(mouseEvent -> {
-                String selectedZaallocatie = lvZaallocatie.getSelectionModel().getSelectedItem().toString();
-                if(selectedZaallocatie != null){
-                    Map<String, String> zaallocatieMap = DBCPDataSource.getSelectedZaallocatie(selectedZaallocatie);
-                    txtAdres.setText(zaallocatieMap.get("adres"));
-                    txtPostcode.setText(zaallocatieMap.get("postcode"));
-                    txtWoonplaats.setText(zaallocatieMap.get("woonplaats"));
-                    txtXkoord.setText(zaallocatieMap.get("xkoord"));
-                    txtYkoord.setText(zaallocatieMap.get("ykoord"));
-                    cbZaalnaam.getSelectionModel().select(zaallocatieMap.get("zaalnaam"));
-                }
-            });
-        } catch(SQLException se){
-            System.out.println(se.getMessage());
-
-        } finally{
-            try{
-                cbZaalnaam.getSelectionModel().selectFirst();
-                con.close();
-            }catch(SQLException se){
-                System.out.println(se.getMessage());
-            }
-        }
+        lvZaallocatie.setOnMouseClicked(mouseEvent -> {
+            ZaallocatieController.fillFields(lvZaallocatie, txtAdres, txtPostcode, txtWoonplaats, txtXkoord, txtYkoord, cbZaalnaam);
+        });
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             ZaallocatieController.addZaallocatie(cbZaalnaam.getValue().toString(), txtAdres.getText(), txtPostcode.getText(),txtWoonplaats.getText(), txtXkoord.getText(), txtYkoord.getText());
             ZaallocatieController.refreshList(lvZaallocatie);

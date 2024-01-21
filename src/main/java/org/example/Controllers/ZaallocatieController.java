@@ -3,7 +3,9 @@ package org.example.Controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import org.example.DBCPDataSource;
 
 import java.sql.Connection;
@@ -16,6 +18,41 @@ import java.util.Map;
 public class ZaallocatieController {
     private Connection con;
     public ZaallocatieController(){}
+    public void fillComboBox(ComboBox<String> cbZaalnaam) {
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+            ResultSet result = stat.executeQuery("Select * from `zalen`");
+
+            while (result.next()) {
+                String strZaalnaam = result.getString("zaalnaam");
+                cbZaalnaam.getItems().addAll(strZaalnaam);
+            }
+        } catch(SQLException se){
+            System.out.println(se.getMessage());
+
+        } finally{
+            try{
+                cbZaalnaam.getSelectionModel().selectFirst();
+                con.close();
+            }catch(SQLException se){
+                System.out.println(se.getMessage());
+            }
+        }
+    }
+
+    public void fillFields(ListView<String> lvZaallocatie, TextField txtAdres, TextField txtPostcode, TextField txtWoonplaats, TextField txtXkoord, TextField txtYkoord, ComboBox<String> cbZaalnaam) {
+        String selectedZaallocatie = lvZaallocatie.getSelectionModel().getSelectedItem().toString();
+        if(selectedZaallocatie != null){
+            Map<String, String> zaallocatieMap = DBCPDataSource.getSelectedZaallocatie(selectedZaallocatie);
+            txtAdres.setText(zaallocatieMap.get("adres"));
+            txtPostcode.setText(zaallocatieMap.get("postcode"));
+            txtWoonplaats.setText(zaallocatieMap.get("woonplaats"));
+            txtXkoord.setText(zaallocatieMap.get("xkoord"));
+            txtYkoord.setText(zaallocatieMap.get("ykoord"));
+            cbZaalnaam.getSelectionModel().select(zaallocatieMap.get("zaalnaam"));
+        }
+    }
     public void addZaallocatie(String cbZaalnaam, String txtAdres, String txtPostcode, String txtWoonplaats, String txtXkoord, String txtYkoord) {
         String strSQL = "insert into `zaallocaties`(zaalnaam, adres, postcode, woonplaats, xkoord, ykoord) " +
                 "values (?, ?, ?, ?, ?, ?)";

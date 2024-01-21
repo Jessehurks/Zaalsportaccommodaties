@@ -2,7 +2,9 @@ package org.example.Controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import org.example.DBCPDataSource;
 
 import java.sql.Connection;
@@ -16,6 +18,38 @@ public class ZaalController {
     private Connection con;
     public ZaalController() {
 
+    }
+    public void fillComboBox(ComboBox<String> cbAccommodatie) {
+        //TODO: Dit moet nog in ZaalController
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+            ResultSet result = stat.executeQuery("Select * from `accommodaties`");
+
+            while (result.next()) {
+                String strAccommodatie = result.getString("accommodatie");
+                cbAccommodatie.getItems().addAll(strAccommodatie);
+            }
+
+        } catch(SQLException se){
+            System.out.println(se.getMessage());
+
+        } finally{
+            try{
+                cbAccommodatie.getSelectionModel().selectFirst();
+                con.close();
+            }catch(SQLException se){
+                System.out.println(se.getMessage());
+            }
+        }
+    }
+    public void fillFields(ListView<String> lvZaal, TextField txtZaalnaam, ComboBox<String> cbAccommodatie) {
+        String selectedZaal = lvZaal.getSelectionModel().getSelectedItem().toString();
+        if(selectedZaal != null){
+            Map<String, String> zaalMap = DBCPDataSource.getSelectedZaal(selectedZaal);
+            txtZaalnaam.setText(zaalMap.get("zaalnaam"));
+            cbAccommodatie.getSelectionModel().select(zaalMap.get("accommodatie"));
+        }
     }
     public void addZaal(String txtZaalnaam, String cbAccommodatie) {
         String strSQL = "insert into `zalen`(zaalnaam, accommodatie) " +

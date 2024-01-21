@@ -24,41 +24,43 @@ public class DBCPDataSource {
         return ds.getConnection();
     }
 
-    private DBCPDataSource(){
+    private DBCPDataSource() {
 
     }
-    public static boolean ExecuteQuery(String strSQL, Map<Integer, String> valueMap){
+
+    public static boolean ExecuteQuery(String strSQL, Map<Integer, String> valueMap) {
         Connection con = null;
 
-        try{
+        try {
             con = getConnection();
             PreparedStatement stat = con.prepareStatement(strSQL);
-            for(Integer key: valueMap.keySet()){
+            for (Integer key : valueMap.keySet()) {
                 stat.setString(key, valueMap.get(key));
             }
 
             int result = stat.executeUpdate();
-            if(result == 1){
+            if (result == 1) {
                 System.out.println("Query is verwerkt");
             }
-        }catch (SQLIntegrityConstraintViolationException e) {
+        } catch (SQLIntegrityConstraintViolationException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Deze gegevens zijn al aanwezig.");
             alert.showAndWait();
-        }catch(SQLException se){
+        } catch (SQLException se) {
             System.out.println(se.getMessage());
-        }finally{
-            try{
-                if(con != null){
+        } finally {
+            try {
+                if (con != null) {
                     con.close();
                 }
-            }catch(SQLException se){
+            } catch (SQLException se) {
                 System.out.println(se.getMessage());
             }
         }
         return true;
     }
-    public static Map<String,String> getSelectedZaal(String selectedZaal){
+
+    public static Map<String, String> getSelectedZaal(String selectedZaal) {
         Connection con = null;
 
         try {
@@ -73,19 +75,20 @@ public class DBCPDataSource {
             }
 
             return zaalMap;
-        } catch(SQLException se){
+        } catch (SQLException se) {
             System.out.println(se.getMessage());
 
-        } finally{
-            try{
+        } finally {
+            try {
                 con.close();
-            }catch(SQLException se){
+            } catch (SQLException se) {
                 System.out.println(se.getMessage());
             }
         }
         return new HashMap<>();
     }
-    public static Map<String,String> getSelectedZaalgegevens(String selectedZaalgegevens){
+
+    public static Map<String, String> getSelectedZaalgegevens(String selectedZaalgegevens) {
         Connection con = null;
 
         try {
@@ -102,19 +105,46 @@ public class DBCPDataSource {
             }
 
             return zaalgegevensMap;
-        } catch(SQLException se){
+        } catch (SQLException se) {
             System.out.println(se.getMessage());
 
-        } finally{
-            try{
+        } finally {
+            try {
                 con.close();
-            }catch(SQLException se){
+            } catch (SQLException se) {
                 System.out.println(se.getMessage());
             }
         }
         return new HashMap<>();
     }
-    public static Map<String,String> getSelectedZaallocatie(String selectedZaallocatie){
+    public static Map<String, String> getSelectedAccommodatie(String selectedAccommodatie) {
+        Connection con = null;
+
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+            ResultSet result = stat.executeQuery("Select * from `accommodaties` WHERE accommodatie = '" + selectedAccommodatie + "'");
+            Map<String, String> accommodatieMap = new HashMap<>();
+
+            if (result.next()) {
+                accommodatieMap.put("accommodatie", result.getString("accommodatie"));
+            }
+
+            return accommodatieMap;
+        } catch (SQLException se) {
+            System.out.println(se.getMessage());
+
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException se) {
+                System.out.println(se.getMessage());
+            }
+        }
+        return new HashMap<>();
+    }
+
+    public static Map<String, String> getSelectedZaallocatie(String selectedZaallocatie) {
         Connection con = null;
 
         try {
@@ -133,16 +163,45 @@ public class DBCPDataSource {
             }
 
             return zaallocatieMap;
-        } catch(SQLException se){
+        } catch (SQLException se) {
             System.out.println(se.getMessage());
 
-        } finally{
-            try{
+        } finally {
+            try {
                 con.close();
-            }catch(SQLException se){
+            } catch (SQLException se) {
                 System.out.println(se.getMessage());
             }
         }
         return new HashMap<>();
     }
-}
+
+    public static Map<String, String> getSelectedGebruiker(String selectedGebruikersnaam) {
+        Connection con = null;
+
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+            ResultSet result = stat.executeQuery("Select * from `gebruikers` WHERE gebruikersnaam = '" + selectedGebruikersnaam + "'");
+            Map<String, String> gebruikerMap = new HashMap<>();
+
+            if (result.next()) {
+                gebruikerMap.put("gebruikersnaam", result.getString("gebruikersnaam"));
+                gebruikerMap.put("wachtwoord", result.getString("wachtwoord"));
+                gebruikerMap.put("type", result.getString("type"));
+
+                return gebruikerMap;
+            }
+            } catch(SQLException se){
+                System.out.println(se.getMessage());
+
+            } finally{
+                try {
+                    con.close();
+                } catch (SQLException se) {
+                    System.out.println(se.getMessage());
+                }
+            }
+            return new HashMap<>();
+        }
+    }

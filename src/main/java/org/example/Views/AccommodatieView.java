@@ -67,6 +67,10 @@ public class AccommodatieView extends MenuBar {
 
         AccommodatieController.refreshList(lvAccommodatie);
 
+
+        lvAccommodatie.setOnMouseClicked(mouseEvent -> {
+            AccommodatieController.fillFields(lvAccommodatie, txtAccommodatie);
+        });
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             AccommodatieController.addAccommodatie(txtAccommodatie.getText());
             AccommodatieController.refreshList(lvAccommodatie);

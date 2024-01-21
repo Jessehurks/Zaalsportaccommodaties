@@ -3,7 +3,9 @@ package org.example.Controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import org.example.DBCPDataSource;
 
 import java.sql.Connection;
@@ -17,6 +19,41 @@ public class ZaalgegevensController {
     private Connection con;
     public ZaalgegevensController(){
 
+    }
+
+    public void fillComboBox(ComboBox<String> cbZaalnaam) {
+        //TODO: Dit moet nog in ZaalgegevensController
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+            ResultSet result = stat.executeQuery("Select * from `zalen`");
+
+            while (result.next()) {
+                String strZaalnaam = result.getString("zaalnaam");
+                cbZaalnaam.getItems().addAll(strZaalnaam);
+            }
+
+        } catch(SQLException se){
+            System.out.println(se.getMessage());
+
+        } finally{
+            try{
+                cbZaalnaam.getSelectionModel().selectFirst();
+                con.close();
+            }catch(SQLException se){
+                System.out.println(se.getMessage());
+            }
+        }
+    }
+
+    public void fillFields(ListView<String> lvZaalgegevens, TextField txtTelefoonnummer, TextField txtWebsite, ComboBox<String> cbZaalnaam) {
+        String selectedZaalgegevens = lvZaalgegevens.getSelectionModel().getSelectedItem().toString();
+        if(selectedZaalgegevens != null){
+            Map<String, String> zaalgegevensMap = DBCPDataSource.getSelectedZaalgegevens(selectedZaalgegevens);
+            txtTelefoonnummer.setText(zaalgegevensMap.get("telefoonnummer"));
+            txtWebsite.setText(zaalgegevensMap.get("website"));
+            cbZaalnaam.getSelectionModel().select(zaalgegevensMap.get("zaalnaam"));
+        }
     }
     public void addZaalgegevens(String cbZaalnaam, String txtTelefoonnummer, String txtWebsite) {
         String strSQL = "insert into `zaalgegevens`(zaalnaam, telefoonnummer, website) " +

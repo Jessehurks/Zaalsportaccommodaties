@@ -47,37 +47,11 @@ public class ZaalgegevensView {
         btnDelete = new Button("Verwijderen");
 
         ZaalgegevensController.refreshList(lvZaalgegevens);
+        ZaalgegevensController.fillComboBox(cbZaalnaam);
 
-        //TODO: Dit moet nog in ZaalgegevensController
-        try {
-            con = DBCPDataSource.getConnection();
-            Statement stat = con.createStatement();
-            ResultSet result = stat.executeQuery("Select * from `zalen`");
-
-            while (result.next()) {
-                String strZaalnaam = result.getString("zaalnaam");
-                cbZaalnaam.getItems().addAll(strZaalnaam);
-            }
-            lvZaalgegevens.setOnMouseClicked(mouseEvent -> {
-                String selectedZaalgegevens = lvZaalgegevens.getSelectionModel().getSelectedItem().toString();
-                if(selectedZaalgegevens != null){
-                    Map<String, String> zaalgegevensMap = DBCPDataSource.getSelectedZaalgegevens(selectedZaalgegevens);
-                    txtTelefoonnummer.setText(zaalgegevensMap.get("telefoonnummer"));
-                    txtWebsite.setText(zaalgegevensMap.get("website"));
-                    cbZaalnaam.getSelectionModel().select(zaalgegevensMap.get("zaalnaam"));
-                }
-            });
-        } catch(SQLException se){
-            System.out.println(se.getMessage());
-
-        } finally{
-            try{
-                cbZaalnaam.getSelectionModel().selectFirst();
-                con.close();
-            }catch(SQLException se){
-                System.out.println(se.getMessage());
-            }
-        }
+        lvZaalgegevens.setOnMouseClicked(mouseEvent -> {
+            ZaalgegevensController.fillFields(lvZaalgegevens, txtTelefoonnummer, txtWebsite, cbZaalnaam);
+        });
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             ZaalgegevensController.addZaalgegevens(cbZaalnaam.getValue().toString(), txtTelefoonnummer.getText(), txtWebsite.getText());
             ZaalgegevensController.refreshList(lvZaalgegevens);

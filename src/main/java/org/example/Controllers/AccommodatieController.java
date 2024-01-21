@@ -23,17 +23,12 @@ import java.util.Map;
 public class AccommodatieController {
     private Connection con;
     public AccommodatieController(){
-        Gson gson = new Gson();
 
-        try (Reader reader = new FileReader("C:\\Users\\Jesse\\IdeaProjects\\Zaalsportaccommodaties\\src\\main\\java\\org\\example\\jsonfiles\\jesse_json.json")) {
-
-            Accommodatie[] accommodaties = gson.fromJson(reader, Accommodatie[].class);
-            for (Accommodatie accommodatie : accommodaties) {
-                System.out.println(accommodatie.getAccommodatie());
-            }
-
-        } catch(IOException e){
-            e.printStackTrace();
+    }
+    public void fillFields(ListView<String> lvAccommodatie, TextField txtAccommodatie) {
+        String selectedAccommodatie = lvAccommodatie.getSelectionModel().getSelectedItem();
+        if(selectedAccommodatie != null){
+            txtAccommodatie.setText(selectedAccommodatie);
         }
     }
     public void addAccommodatie(String txtAccommodatie) {
@@ -91,7 +86,10 @@ public class AccommodatieController {
                 String strAccommodatie = result.getString("accommodatie");
                 oList.add(strAccommodatie);
             }
-
+            Accommodatie[] accommodaties = loadAccommodatieJSON();
+            for (Accommodatie a : accommodaties){
+                oList.add(a.getAccommodatie());
+            }
         } catch(SQLException se){
             System.out.println(se.getMessage());
 
@@ -104,6 +102,19 @@ public class AccommodatieController {
                 System.out.println(se.getMessage());
             }
         }
+    }
+    public Accommodatie[] loadAccommodatieJSON() {
+        Gson gson = new Gson();
+
+        try (Reader reader = new FileReader("C:\\Users\\Jesse\\IdeaProjects\\Zaalsportaccommodaties\\src\\main\\java\\org\\example\\jsonfiles\\jesse_json.json")) {
+
+            return gson.fromJson(reader, Accommodatie[].class);
+
+
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+        return new Accommodatie[0];
     }
 
 }

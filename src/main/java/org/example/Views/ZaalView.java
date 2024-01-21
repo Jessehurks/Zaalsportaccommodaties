@@ -45,37 +45,11 @@ public class ZaalView {
         btnDelete = new Button("Verwijderen");
 
         ZaalController.refreshList(lvZaal);
-        //TODO: Dit moet nog in ZaalController
-        try {
-            con = DBCPDataSource.getConnection();
-            Statement stat = con.createStatement();
-            ResultSet result = stat.executeQuery("Select * from `accommodaties`");
+        ZaalController.fillComboBox(cbAccommodatie);
 
-            while (result.next()) {
-                String strAccommodatie = result.getString("accommodatie");
-                cbAccommodatie.getItems().addAll(strAccommodatie);
-            }
-            lvZaal.setOnMouseClicked(mouseEvent -> {
-                String selectedZaal = lvZaal.getSelectionModel().getSelectedItem().toString();
-                if(selectedZaal != null){
-                    Map<String, String> zaalMap = DBCPDataSource.getSelectedZaal(selectedZaal);
-                    txtZaalnaam.setText(zaalMap.get("zaalnaam"));
-                    cbAccommodatie.getSelectionModel().select(zaalMap.get("accommodatie"));
-                }
-            });
-        } catch(SQLException se){
-            System.out.println(se.getMessage());
-
-        } finally{
-            try{
-                cbAccommodatie.getSelectionModel().selectFirst();
-                con.close();
-            }catch(SQLException se){
-                System.out.println(se.getMessage());
-            }
-        }
-
-
+        lvZaal.setOnMouseClicked(mouseEvent -> {
+            ZaalController.fillFields(lvZaal, txtZaalnaam, cbAccommodatie);
+        });
         btnOpslaan.setOnMouseClicked(mouseEvent -> {
             ZaalController.addZaal(txtZaalnaam.getText(), cbAccommodatie.getValue().toString());
             ZaalController.refreshList(lvZaal);
