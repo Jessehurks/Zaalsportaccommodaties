@@ -5,7 +5,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.example.Controllers.AccommodatieController;
+import org.example.Controllers.UserRepository;
 import org.example.DBCPDataSource;
+import org.example.Models.Beheerder;
+import org.example.Models.iGebruiker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,17 +31,22 @@ public class AccommodatieView extends MenuBar {
         AccommodatieController = new AccommodatieController();
         pane = p;
         menu = new Menu("Menu");
+        iGebruiker gebruiker = UserRepository.getInstance().getGebruiker();
+        System.out.println(gebruiker.getClass());
 
         menuAccommodatieView = new MenuItem("Accommodaties");
         menuAccommodatieView.setOnAction(actionEvent -> {
             pane.getChildren().clear();
             new AccommodatieView(p);
         });
-        menuGebruikerView = new MenuItem("Gebruikers");
-        menuGebruikerView.setOnAction(actionEvent -> {
-            pane.getChildren().clear();
-            new GebruikerView(p);
-        });
+        if(gebruiker instanceof Beheerder){
+            menuGebruikerView = new MenuItem("Gebruikers");
+            menuGebruikerView.setOnAction(actionEvent -> {
+                pane.getChildren().clear();
+                new GebruikerView(p);
+            });
+            menu.getItems().add(menuGebruikerView);
+        }
         menuZaalView = new MenuItem("Zalen");
         menuZaalView.setOnAction(actionEvent -> {
             pane.getChildren().clear();
@@ -96,7 +104,7 @@ public class AccommodatieView extends MenuBar {
 
         lvAccommodatie.relocate(300, 15);
 
-        menu.getItems().addAll(menuAccommodatieView, menuZaalView, menuZaallocatieView, menuZaalgegevensView, menuGebruikerView);
+        menu.getItems().addAll(menuAccommodatieView, menuZaalView, menuZaallocatieView, menuZaalgegevensView);
         this.getMenus().add(menu);
         p.getChildren().addAll(gridPane, lvAccommodatie);
     }

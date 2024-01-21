@@ -1,7 +1,15 @@
 package org.example.Models;
 
-public interface Gebruiker {
+public class Gebruiker implements iGebruiker {
 
-    public String getGebruikersnaam();
-    public String getType();
+    protected String gebruikersnaam, wachtwoord, type;
+
+    public String getGebruikersnaam() {
+        return gebruikersnaam;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 }
